@@ -11,3 +11,13 @@
    * Models -> Dtos -> Departments
    * Services -> Departments -> DepartmentManager
    * PositionController
+
+## Day 3(07.11.2022)
+   * DepartmentController
+   * Models -> Dtos -> Positions
+   * Services -> Positions -> IPositionService.cs, PositionManager.cs
+   * Models -> Shared
+   * Models -> Dtos -> Positions
+   * Models -> Entities -> EmployeeDepartment.cs
+   * Repositories -> IBaseRepository.cs, BaseRespository.cs
+   * Routes
