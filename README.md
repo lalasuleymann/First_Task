@@ -21,3 +21,11 @@
    * Models -> Entities -> EmployeeDepartment.cs
    * Repositories -> IBaseRepository.cs, BaseRespository.cs
    * Routes
+
+## Day 4(08.11.2022)
+   * Services -> Users
+   * Models -> Dtos -> Users
+   * IdentityController -> Login, Register
+   * JwtSettings.cs
+
+   
