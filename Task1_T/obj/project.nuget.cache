@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "IuiTQDd1yoy/mMb6ucAdiCFydAE5d6nqXYkPWq+9IIxwoDd2TIQoJh3sfLBN9RlJg3MgXotb3IGRq9oTQDlUXQ==",
+  "dgSpecHash": "eBMIT6sDdRakzE8y/qasOilPHOPtOyD8U6WRDBvI45+BaZG3eDCsJ1Ps7hcWi3YfQcW1tKM7kE60IL3ZUe4Xtg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\lasly\\OneDrive\\Desktop\\Task1_T\\Task1_T.csproj",
+  "projectFilePath": "C:\\Users\\lasly\\OneDrive\\Desktop\\First_Task\\Task1_T\\Task1_T.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\lasly\\.nuget\\packages\\automapper\\12.0.0\\automapper.12.0.0.nupkg.sha512",
     "C:\\Users\\lasly\\.nuget\\packages\\automapper.collection\\9.0.0\\automapper.collection.9.0.0.nupkg.sha512",
