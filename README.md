@@ -23,9 +23,13 @@
    * Routes
 
 ## Day 4(08.11.2022)
-   * Services -> Users
+   * Services -> Users -> IUserService.cs, UserManager.cs
    * Models -> Dtos -> Users
    * IdentityController -> Login, Register
    * JwtSettings.cs
+   * Mappings
 
-   
+## Day 5(09.11.2022)
+   * Services -> Tokens -> ITokenService.cs, TokenManager.cs
+   * Models -> Dtos -> Tokens, BaseDto.cs
+   * ManagingController
