@@ -1,4 +1,5 @@
 ﻿using Task1_T.Models.Dtos.Users;
+using Task1_T.Models.Entities;
 
 namespace Task1_T.Services.Users
 {

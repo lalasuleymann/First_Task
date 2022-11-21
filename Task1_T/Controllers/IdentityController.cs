@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -23,13 +24,14 @@ namespace Task1_T.Controllers
         }
 
         [HttpPost(ApiRoutes.Identity.Register)]
+        [Authorize]
         public async Task<IActionResult> Register (UserRegistrationRequest request)
         {
             return Ok(await _userService.RegisterAsync(request.Email, request.Password));
         }
 
-
         [HttpPost(ApiRoutes.Identity.Login)]
+        [Authorize]
         public async Task<IActionResult> Login(UserRegistrationRequest request)
         {
             return Ok(await _userService.LoginAsync(request.Email, request.Password));

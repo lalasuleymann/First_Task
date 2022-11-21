@@ -19,8 +19,8 @@ namespace Task1_T.Services.Departments
         public async Task<DepartmentGetResponse> GetDepartmentByIdAsync(int departmentId)
         {
             var response = new DepartmentGetResponse();
-            var item = await _departmentRepository.GetFirstOrDefaultAsync(x=> x.Id==departmentId);
-            response.DepartmentDto = _mapper.Map<DepartmentDto>(item);
+            var department = await _departmentRepository.GetFirstOrDefaultAsync(x=> x.Id==departmentId);
+            response.DepartmentDto = _mapper.Map<DepartmentDto>(department);
             return response;
         }
 
@@ -37,12 +37,13 @@ namespace Task1_T.Services.Departments
         {
             DepartmentGetResponse response = new();
 
-            Department entity = new Department
+            Department department = new Department
             {
+                Id = request.Id,
                 Name = request.Name
             };
 
-            var addedEntity = await _departmentRepository.AddAsync(entity);
+            var addedEntity = await _departmentRepository.AddAsync(department);
             if (addedEntity == null)
             {
                 throw new Exception("Data could not be added!");

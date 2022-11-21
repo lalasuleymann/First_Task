@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System.Security.Cryptography;
 using System.Text;
 using Task1_T.Models.Dtos.Users;
@@ -10,20 +11,23 @@ namespace Task1_T.Services.Users
 {
     public class UserManager : IUserService
     {
+        private const string Key = "user_cache"; // User id istifade ele keyde
         private readonly IBaseRepository<User> _userRepository;
         private readonly ITokenService _tokenService;
-
-        public UserManager(IBaseRepository<User> userRepository, ITokenService tokenService)
+        private readonly IMemoryCache memoryCache;
+        public UserManager(IBaseRepository<User> userRepository, ITokenService tokenService, IMemoryCache memoryCache)
         {
             _userRepository = userRepository;
             _tokenService = tokenService;
+            this.memoryCache = memoryCache;
         }
 
         public static string CreatePasswordHash(string password)
         {
+            User user = new();
             UTF8Encoding encoder = new UTF8Encoding();
             SHA512Managed sha512Hasher = new();
-            byte[] hashedDataBytes = sha512Hasher.ComputeHash(encoder.GetBytes(password));
+            byte[] hashedDataBytes = sha512Hasher.ComputeHash(encoder.GetBytes(password + user.Id));
             return Convert.ToBase64String(hashedDataBytes);
         }
 
@@ -31,7 +35,7 @@ namespace Task1_T.Services.Users
         {
             AuthResponse response = new();
 
-            var existingUser = await _userRepository.GetFirstOrDefaultAsync(x => x.Email == email);
+            var existingUser = await _userRepository.GetFirstOrDefaultAsync(x => x.Email == email.ToLower());
 
             if (existingUser == null)
             {
@@ -76,5 +80,32 @@ namespace Task1_T.Services.Users
             return authResponse;
         }
 
+        public void AddCache(User[] users)
+        {
+            var option = new MemoryCacheEntryOptions
+            {
+                SlidingExpiration = TimeSpan.FromSeconds(1),
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(10),
+                Size = 1024
+            };
+            memoryCache.Set<User[]>(Key, users, option);
+        }
+
+        public User[] /*List<User>*/ GetCachedUser()
+        {
+            User[] users;
+            if (memoryCache.TryGetValue(Key, out users))
+            {
+                users = new User[]
+            {
+                new User{Email = "a@gmail.com", Password= "1234"},
+                new User{Email = "l@gmail.com", Password= "4321"}
+            };
+                AddCache(users);
+            }
+            return users;
+            //List<User> users = memoryCache.Get<List<User>>(Key);
+            //return users;
+        }
     }
 }

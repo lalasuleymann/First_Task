@@ -56,7 +56,6 @@ namespace Task1_T.Services.Positions
             var item = await _positionRepository.GetFirstOrDefaultAsync(x => x.Id == positionId);
 
             item.Name = request.Name;
-
             await _positionRepository.UpdateAsync(item);
         }
 

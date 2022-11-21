@@ -10,12 +10,10 @@ namespace Task1_T.Services.Tokens
     public class TokenManager : ITokenService
     {
         private readonly JwtSettings _jwtSettings;
-        private readonly TokenValidationParameters _tokenValidationParameters;
 
-        public TokenManager(JwtSettings jwtSettings, TokenValidationParameters tokenValidationParameters)
+        public TokenManager(JwtSettings jwtSettings)
         {
             _jwtSettings = jwtSettings;
-            _tokenValidationParameters = tokenValidationParameters;
         }
         public async Task<TokenResult> GenerateAuthenticationResultForUser(User user)
         {

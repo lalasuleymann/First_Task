@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Task1_T.Models.Departments;
+using Task1_T.Models.Dtos.Employees;
 using Task1_T.Models.Dtos.Positions;
+using Task1_T.Models.Dtos.Users;
 using Task1_T.Models.Entities;
 
 namespace Task1_T.Mappings
@@ -11,6 +13,8 @@ namespace Task1_T.Mappings
         {
             CreateMap<Department, DepartmentDto>();
             CreateMap<Position, PositionDto>();
+            CreateMap<Employee, EmployeeDto>();
+            CreateMap<User, UserDto>();
         }
     }
 }

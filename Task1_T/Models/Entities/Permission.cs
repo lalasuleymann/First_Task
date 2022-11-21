@@ -6,5 +6,6 @@ namespace Task1_T.Models.Entities
     public class Permission : CommonEntity
     {
         public string Name { get; set; }
+        public ICollection<UserPermission> UserPermissions { get; set; }
     }
 }

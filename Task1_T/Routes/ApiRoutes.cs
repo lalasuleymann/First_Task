@@ -29,5 +29,14 @@
             public const string Login = Base + "/identity/login";
             public const string Register = Base + "/identity/register";
         }
+
+        public struct Employee
+        {
+            public const string GetAll = Base + "/employee";
+            public const string Get = Base + "/employee/{employeeId}";
+            public const string Update = Base + "/employee/{employeeId}";
+            public const string Delete = Base + "/employee/{employeeId}";
+            public const string Create = Base + "/employee";
+        }
     }
 }
