@@ -48,7 +48,6 @@
         public struct Manage
         {
             public const string GetAll = Base + "/manage";
-            public const string Create = Base + "/manage";
 
             public const string Get = Base + "/managelevel";
         }

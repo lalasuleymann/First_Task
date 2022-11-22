@@ -27,7 +27,6 @@ namespace Task1_T.Services.Manages
             return result;
         }
 
-
         public async Task<ICollection<EmployeeDto>> GetEmployeesAsync(int employeeId)
         {
             var employees = await _dbContext.Employees.Where(x => x.Id == employeeId).Include(x => x.Children).ToListAsync();

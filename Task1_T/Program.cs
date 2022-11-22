@@ -9,7 +9,6 @@ using System.Net;
 using System.Reflection;
 using Task1_T;
 using Task1_T.Data;
-using Task1_T.Loggings;
 using Task1_T.Middlewares;
 using Task1_T.Repositories;
 using Task1_T.Services.Departments;

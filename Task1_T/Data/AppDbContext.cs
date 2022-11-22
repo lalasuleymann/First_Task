@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Task1_T.Loggings;
 using Task1_T.Models.Entities;
 using Task1_T.Models.Shared;
 namespace Task1_T.Data
