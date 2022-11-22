@@ -30,7 +30,6 @@ namespace Task1_T.Repositories
         public async Task<T> AddAsync(T entity)
         {
             var addedItem = (await DbSet.AddAsync(entity)).Entity;
-            await _dbContext.SaveChangesAsync();
             return addedItem;
         }
         public async Task UpdateAsync(T entity)
@@ -41,7 +40,6 @@ namespace Task1_T.Repositories
             {
                 DbSet.Update(item);
             }
-            await _dbContext.SaveChangesAsync();
         }
         public async Task DeleteAsync(T entity)
         {
@@ -52,7 +50,6 @@ namespace Task1_T.Repositories
                 item.IsDeleted = true;
                 item.DeletedDate = DateTime.UtcNow;
             }
-            await _dbContext.SaveChangesAsync();
         }
     }
 }

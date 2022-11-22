@@ -67,6 +67,9 @@ namespace Task1_T.Migrations
                     b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("EmployeeParentId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -85,6 +88,8 @@ namespace Task1_T.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EmployeeParentId");
 
                     b.HasIndex("PositionId")
                         .IsUnique();
@@ -234,6 +239,12 @@ namespace Task1_T.Migrations
 
             modelBuilder.Entity("Task1_T.Models.Entities.Employee", b =>
                 {
+                    b.HasOne("Task1_T.Models.Entities.Employee", null)
+                        .WithMany("Children")
+                        .HasForeignKey("EmployeeParentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Task1_T.Models.Entities.Position", "Position")
                         .WithOne("Employee")
                         .HasForeignKey("Task1_T.Models.Entities.Employee", "PositionId")
@@ -288,6 +299,8 @@ namespace Task1_T.Migrations
 
             modelBuilder.Entity("Task1_T.Models.Entities.Employee", b =>
                 {
+                    b.Navigation("Children");
+
                     b.Navigation("EmployeeDepartments");
                 });
 

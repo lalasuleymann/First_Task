@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Task1_T.Extensions;
 using Task1_T.Models.Dtos.Employees;
 using Task1_T.Routes;
 using Task1_T.Services.Employees;
@@ -13,7 +14,7 @@ namespace Task1_T.Controllers
         {
             _employeeService = employeeService;
         }
-
+        [ClaimRequirementFilter("EmployeeGetAll")]
         [HttpGet(ApiRoutes.Employee.GetAll)]
         public async Task<IActionResult> GetAll()
         {

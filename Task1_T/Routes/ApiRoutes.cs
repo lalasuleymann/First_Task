@@ -38,5 +38,19 @@
             public const string Delete = Base + "/employee/{employeeId}";
             public const string Create = Base + "/employee";
         }
+
+        public struct UserPermission
+        {
+            public const string GetAll = Base + "/userpermission";
+            public const string Create = Base + "/userpermission";
+        }
+
+        public struct Manage
+        {
+            public const string GetAll = Base + "/manage";
+            public const string Create = Base + "/manage";
+
+            public const string Get = Base + "/managelevel";
+        }
     }
 }

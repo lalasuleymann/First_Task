@@ -1,4 +1,5 @@
-﻿using Task1_T.Models.Dtos.Users;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Task1_T.Models.Dtos.Users;
 using Task1_T.Models.Entities;
 
 namespace Task1_T.Services.Users
@@ -7,5 +8,6 @@ namespace Task1_T.Services.Users
     {
         Task<AuthResponse> RegisterAsync(string email, string password);
         Task<AuthResponse> LoginAsync(string email, string password);
+        Task<ICollection<PermissionDto>> CacheUserPermissions(int userId);
     }
 }

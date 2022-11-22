@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System.Net;
 using System.Reflection;
 using Task1_T;
 using Task1_T.Data;
+using Task1_T.Loggings;
 using Task1_T.Middlewares;
 using Task1_T.Repositories;
 using Task1_T.Services.Departments;
@@ -15,18 +17,21 @@ using Task1_T.Services.Employees;
 using Task1_T.Services.Positions;
 using Task1_T.Services.Tokens;
 using Task1_T.Services.Users;
+using Task1_T.UnitOfWork;
 using Task1_T.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+builder.Services.AddScoped<IUnitOfWorkService, UnitOfWorkManager>();
 builder.Services.AddScoped<IDepartmentService, DepartmentManager>();
 builder.Services.AddScoped<IPositionService, PositionManager>();
 builder.Services.AddScoped<IUserService, UserManager>();
 builder.Services.AddScoped<ITokenService, TokenManager>();
-builder.Services.AddSingleton(typeof(JwtSettings), new JwtSettings { Secret = "testSecret", TokenLifeTime = TimeSpan.FromHours(2) });
+builder.Services.AddSingleton(typeof(JwtSettings), new JwtSettings { Secret = "testSecretKeyofJWTSettings", TokenLifeTime = TimeSpan.FromHours(2) });
 builder.Services.AddScoped<IEmployeeService, EmployeeManager>();
+builder.Services.AddAuthentication();
 
 //validators
 builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
@@ -55,8 +60,19 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireManagerRole",
+        policy => policy.RequireRole("Manager"));
+});
+
+builder.Services.AddHttpLogging(httpLogging =>
+{
+    httpLogging.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
+});
 var app = builder.Build();
 
+app.UseHttpLogging();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -66,6 +82,7 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

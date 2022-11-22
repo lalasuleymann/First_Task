@@ -15,6 +15,8 @@ namespace Task1_T.Mappings
             CreateMap<Position, PositionDto>();
             CreateMap<Employee, EmployeeDto>();
             CreateMap<User, UserDto>();
+            CreateMap<UserPermission, PermissionDto>()
+                .ForMember(x => x.Name, e => e.MapFrom(c => c.Permission.Name));
         }
     }
 }

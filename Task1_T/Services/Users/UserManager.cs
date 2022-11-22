@@ -1,25 +1,34 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System.Security.Cryptography;
 using System.Text;
+using Task1_T.Data;
 using Task1_T.Models.Dtos.Users;
 using Task1_T.Models.Entities;
 using Task1_T.Repositories;
 using Task1_T.Services.Tokens;
+using Task1_T.UnitOfWork;
 
 namespace Task1_T.Services.Users
 {
     public class UserManager : IUserService
     {
-        private const string Key = "user_cache"; // User id istifade ele keyde
-        private readonly IBaseRepository<User> _userRepository;
+        private readonly IUnitOfWorkService _unitOfWork;
+        private readonly AppDbContext _dbContext;
         private readonly ITokenService _tokenService;
         private readonly IMemoryCache memoryCache;
-        public UserManager(IBaseRepository<User> userRepository, ITokenService tokenService, IMemoryCache memoryCache)
+        private readonly IMapper _mapper;
+
+
+        public UserManager(IUnitOfWorkService unitOfWork,IMapper mapper, ITokenService tokenService, IMemoryCache memoryCache,AppDbContext dbContext)
         {
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
             _tokenService = tokenService;
             this.memoryCache = memoryCache;
+            _dbContext = dbContext;
+            _mapper = mapper;
         }
 
         public static string CreatePasswordHash(string password)
@@ -35,9 +44,9 @@ namespace Task1_T.Services.Users
         {
             AuthResponse response = new();
 
-            var existingUser = await _userRepository.GetFirstOrDefaultAsync(x => x.Email == email.ToLower());
+            var existingUser = await _unitOfWork.Users.GetFirstOrDefaultAsync(x => x.Email == email.ToLower());
 
-            if (existingUser == null)
+            if (existingUser != null)
             {
                 throw new Exception("User with this mail has already had registered. Try another mail!");
             }
@@ -48,14 +57,14 @@ namespace Task1_T.Services.Users
                 Password = CreatePasswordHash(password)
             };
 
-            var createdUser = await _userRepository.AddAsync(newUser);
+            var createdUser = await _unitOfWork.Users.AddAsync(newUser);
             if (createdUser == null)
             {
                 throw new Exception("Problem occured during creating account!");
             }
 
             var generatedToken = await _tokenService.GenerateAuthenticationResultForUser(newUser);
-
+            _unitOfWork.Complete();
             response.Token = generatedToken.Token;
             return response;
         }
@@ -64,7 +73,7 @@ namespace Task1_T.Services.Users
         {
             AuthResponse authResponse = new();
 
-            var user = await _userRepository.GetFirstOrDefaultAsync(x => x.Email == email.ToLower());
+            var user = await _unitOfWork.Users.GetFirstOrDefaultAsync(x => x.Email == email.ToLower());
 
             var userHasValidPassword = user.Password == CreatePasswordHash(password);
 
@@ -74,38 +83,23 @@ namespace Task1_T.Services.Users
             }
 
             var generatedToken = await _tokenService.GenerateAuthenticationResultForUser(user);
+            _unitOfWork.Complete();
 
             authResponse.Token = generatedToken.Token;
-
             return authResponse;
         }
 
-        public void AddCache(User[] users)
+        public async Task<ICollection<PermissionDto>> GetUserPermissions(int userId)
         {
-            var option = new MemoryCacheEntryOptions
-            {
-                SlidingExpiration = TimeSpan.FromSeconds(1),
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(10),
-                Size = 1024
-            };
-            memoryCache.Set<User[]>(Key, users, option);
+            var permissions = await _dbContext.UserPermissions.Where(x => x.UserId == userId).Include(x => x.Permission).ToListAsync();
+            var userPermissions = _mapper.Map<ICollection<PermissionDto>>(permissions);
+            return userPermissions;
         }
 
-        public User[] /*List<User>*/ GetCachedUser()
+        public async Task<ICollection<PermissionDto>> CacheUserPermissions(int userId)
         {
-            User[] users;
-            if (memoryCache.TryGetValue(Key, out users))
-            {
-                users = new User[]
-            {
-                new User{Email = "a@gmail.com", Password= "1234"},
-                new User{Email = "l@gmail.com", Password= "4321"}
-            };
-                AddCache(users);
-            }
-            return users;
-            //List<User> users = memoryCache.Get<List<User>>(Key);
-            //return users;
+            var permissions = await memoryCache.GetOrCreateAsync(userId, async (x) => await GetUserPermissions(userId));
+            return permissions;
         }
     }
 }
