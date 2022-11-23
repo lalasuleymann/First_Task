@@ -18,7 +18,7 @@ namespace Task1_T.Services.Users
         private readonly IUnitOfWorkService _unitOfWork;
         private readonly AppDbContext _dbContext;
         private readonly ITokenService _tokenService;
-        private readonly IMemoryCache memoryCache;
+        private readonly IMemoryCache _memoryCache;
         private readonly IMapper _mapper;
 
 
@@ -26,7 +26,7 @@ namespace Task1_T.Services.Users
         {
             _unitOfWork = unitOfWork;
             _tokenService = tokenService;
-            this.memoryCache = memoryCache;
+            _memoryCache = memoryCache;
             _dbContext = dbContext;
             _mapper = mapper;
         }
@@ -64,7 +64,6 @@ namespace Task1_T.Services.Users
             }
 
             var generatedToken = await _tokenService.GenerateAuthenticationResultForUser(newUser);
-            _unitOfWork.Complete();
             response.Token = generatedToken.Token;
             return response;
         }
@@ -74,7 +73,10 @@ namespace Task1_T.Services.Users
             AuthResponse authResponse = new();
 
             var user = await _unitOfWork.Users.GetFirstOrDefaultAsync(x => x.Email == email.ToLower());
-
+            if (user== null)
+            {
+                throw new Exception("User is not exist!");
+            }
             var userHasValidPassword = user.Password == CreatePasswordHash(password);
 
             if (!userHasValidPassword)
@@ -83,7 +85,6 @@ namespace Task1_T.Services.Users
             }
 
             var generatedToken = await _tokenService.GenerateAuthenticationResultForUser(user);
-            _unitOfWork.Complete();
 
             authResponse.Token = generatedToken.Token;
             return authResponse;
@@ -98,7 +99,8 @@ namespace Task1_T.Services.Users
 
         public async Task<ICollection<PermissionDto>> CacheUserPermissions(int userId)
         {
-            var permissions = await memoryCache.GetOrCreateAsync(userId, async (x) => await GetUserPermissions(userId));
+            var permissions = await _memoryCache.GetOrCreateAsync(userId, async (x) => await GetUserPermissions(userId));
+            _memoryCache.Set(userId, permissions, TimeSpan.FromMinutes(10));
             return permissions;
         }
     }

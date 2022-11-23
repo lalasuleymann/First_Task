@@ -2,9 +2,9 @@
 {
     public class CommonEntity : BaseEntity, ITrackEntity
     {
-        public bool IsDeleted { get; set; }
-        public DateTime? DeletedDate { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime? ModifiedDate { get; set; }
+        public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedDate { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        public DateTime? ModifiedDate { get; set; } = DateTime.UtcNow;
     }
 }

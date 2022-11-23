@@ -47,9 +47,9 @@
 
         public struct Manage
         {
-            public const string GetAll = Base + "/manage";
+            public const string GetDependentEmployees = Base + "/manageDependent";
 
-            public const string Get = Base + "/managelevel";
+            public const string GetManagerEmployees = Base + "/manageManager";
         }
     }
 }

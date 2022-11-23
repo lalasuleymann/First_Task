@@ -3,6 +3,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Net;
@@ -13,8 +14,10 @@ using Task1_T.Middlewares;
 using Task1_T.Repositories;
 using Task1_T.Services.Departments;
 using Task1_T.Services.Employees;
+using Task1_T.Services.Manages;
 using Task1_T.Services.Positions;
 using Task1_T.Services.Tokens;
+using Task1_T.Services.UserPermissions;
 using Task1_T.Services.Users;
 using Task1_T.UnitOfWork;
 using Task1_T.Validators;
@@ -30,6 +33,8 @@ builder.Services.AddScoped<IUserService, UserManager>();
 builder.Services.AddScoped<ITokenService, TokenManager>();
 builder.Services.AddSingleton(typeof(JwtSettings), new JwtSettings { Secret = "testSecretKeyofJWTSettings", TokenLifeTime = TimeSpan.FromHours(2) });
 builder.Services.AddScoped<IEmployeeService, EmployeeManager>();
+builder.Services.AddScoped<IManagerService, ManageManager>();
+builder.Services.AddScoped<IUserPermissionService, UserPermissionManager>();
 builder.Services.AddAuthentication();
 
 //validators

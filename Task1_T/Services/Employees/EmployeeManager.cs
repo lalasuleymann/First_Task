@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using Task1_T.Extensions;
 using Task1_T.Models.Dtos.Employees;
 using Task1_T.Models.Entities;
@@ -37,8 +38,8 @@ namespace Task1_T.Services.Employees
 
         public async Task<EmployeeGetResponse> CreateEmployeeAsync(SaveEmployeeRequest request)
         {
-            var position = await _unitOfWork.Employees.GetFirstOrDefaultAsync(x => x.Id == request.PositionId);
-            if (position!=null)
+            var position = await _unitOfWork.Positions.GetFirstOrDefaultAsync(x => x.Id == request.PositionId);
+            if (position==null)
             {
                 throw new Exception("Position does not exist in database!");
             }
@@ -52,6 +53,7 @@ namespace Task1_T.Services.Employees
                 Surname = request.Surname,
                 BirthDate = request.BirthDate,
                 PositionId = request.PositionId,
+                //EmployeeDepartments= request.DepartmentId.ToArray(out employee)
             };
             
             var addedEntity = await _unitOfWork.Employees.AddAsync(employee);
@@ -78,13 +80,16 @@ namespace Task1_T.Services.Employees
             _unitOfWork.Complete();
         }
 
-        [ClaimRequirementFilter("Employee.DeleteDirector")]
+        [ClaimRequirementFilter(PermissionNames.Employee.Delete)]
         public async Task DeleteEmployeeAsync(int employeeId)
         {
             var employee = await _unitOfWork.Employees.GetFirstOrDefaultAsync(x => x.Id == employeeId);
-
-            await _unitOfWork.Employees.DeleteAsync(employee);
+            if (employee.EmployeeDepartments.Select(x => x.Employee) == null)
+            {
+                await _unitOfWork.Employees.DeleteAsync(employee);
+            }
             _unitOfWork.Complete();
         }
+
     }
 }

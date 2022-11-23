@@ -10,7 +10,6 @@ namespace Task1_T.UnitOfWork
         IBaseRepository<Employee> Employees { get; }
         IBaseRepository<Permission> Permissions { get; }
         IBaseRepository<User> Users { get; }
-
         int Complete();
     }
 }

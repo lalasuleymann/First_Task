@@ -67,7 +67,8 @@ namespace Task1_T.Migrations
                     b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EmployeeParentId")
+                    b.Property<int?>("EmployeeParentId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -91,8 +92,7 @@ namespace Task1_T.Migrations
 
                     b.HasIndex("EmployeeParentId");
 
-                    b.HasIndex("PositionId")
-                        .IsUnique();
+                    b.HasIndex("PositionId");
 
                     b.ToTable("Employees");
                 });
@@ -222,7 +222,7 @@ namespace Task1_T.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("PermissionnId")
+                    b.Property<int>("PermissionId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -230,7 +230,7 @@ namespace Task1_T.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PermissionnId");
+                    b.HasIndex("PermissionId");
 
                     b.HasIndex("UserId");
 
@@ -239,17 +239,19 @@ namespace Task1_T.Migrations
 
             modelBuilder.Entity("Task1_T.Models.Entities.Employee", b =>
                 {
-                    b.HasOne("Task1_T.Models.Entities.Employee", null)
+                    b.HasOne("Task1_T.Models.Entities.Employee", "EmployeeParent")
                         .WithMany("Children")
                         .HasForeignKey("EmployeeParentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Task1_T.Models.Entities.Position", "Position")
-                        .WithOne("Employee")
-                        .HasForeignKey("Task1_T.Models.Entities.Employee", "PositionId")
+                        .WithMany("Employees")
+                        .HasForeignKey("PositionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("EmployeeParent");
 
                     b.Navigation("Position");
                 });
@@ -277,7 +279,7 @@ namespace Task1_T.Migrations
                 {
                     b.HasOne("Task1_T.Models.Entities.Permission", "Permission")
                         .WithMany("UserPermissions")
-                        .HasForeignKey("PermissionnId")
+                        .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -311,8 +313,7 @@ namespace Task1_T.Migrations
 
             modelBuilder.Entity("Task1_T.Models.Entities.Position", b =>
                 {
-                    b.Navigation("Employee")
-                        .IsRequired();
+                    b.Navigation("Employees");
                 });
 
             modelBuilder.Entity("Task1_T.Models.Entities.User", b =>

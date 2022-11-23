@@ -40,8 +40,12 @@ namespace Task1_T.Data
         {
             modelBuilder.Entity<Employee>()
             .HasOne(p => p.Position) 
-            .WithOne(e => e.Employee);
+            .WithMany(e => e.Employees);
 
+            modelBuilder.Entity<Employee>().HasMany(e => e.Children)
+                .WithOne(c => c.EmployeeParent)
+                .HasForeignKey(p=>p.EmployeeParentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<EmployeeDepartment>().HasKey(ed => ed.Id);
 
@@ -58,7 +62,7 @@ namespace Task1_T.Data
             .WithMany(up => up.UserPermissions).HasForeignKey(u => u.UserId);
 
             modelBuilder.Entity<UserPermission>().HasOne(p => p.Permission)
-            .WithMany(up => up.UserPermissions).HasForeignKey(p=>p.PermissionnId);
+            .WithMany(up => up.UserPermissions).HasForeignKey(p=>p.PermissionId);
         }
     }
 }

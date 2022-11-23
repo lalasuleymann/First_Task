@@ -6,7 +6,7 @@ namespace Task1_T.Models.Entities
     public class Position : CommonEntity
     {   
         public string Name { get; set; }
-        public Employee Employee { get; set; }
+        public List<Employee> Employees { get; set; }
 
     }
 }

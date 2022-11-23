@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Task1_T.Extensions;
 using Task1_T.Models.Departments;
 using Task1_T.Routes;
 using Task1_T.Services.Departments;
@@ -15,6 +16,7 @@ namespace Task1_T.Controllers
         }
 
         [HttpGet(ApiRoutes.Department.GetAll)]
+        [ClaimRequirementFilter(PermissionNames.Department.GetAll)]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _departmentService.GetDepartmentsAsync());
@@ -22,6 +24,7 @@ namespace Task1_T.Controllers
 
 
         [HttpGet(ApiRoutes.Department.Get)]
+        [ClaimRequirementFilter(PermissionNames.Department.Get)]
         public async Task<IActionResult> Get(int departmentId)
         {
             return Ok(await _departmentService.GetDepartmentByIdAsync(departmentId));
@@ -29,6 +32,7 @@ namespace Task1_T.Controllers
 
 
         [HttpPost(ApiRoutes.Department.Create)]
+        [ClaimRequirementFilter(PermissionNames.Department.Create)]
         public async Task<IActionResult> Create(SaveDepartmentRequest request)
         {
             return Created(string.Empty, await _departmentService.CreateDepartmentAsync(request));
@@ -36,6 +40,7 @@ namespace Task1_T.Controllers
 
 
         [HttpPut(ApiRoutes.Department.Update)]
+        [ClaimRequirementFilter(PermissionNames.Department.Update)]
         public async Task<IActionResult> Update(int departmentId, SaveDepartmentRequest request)
         {
             await _departmentService.UpdateDepartmentAsync(departmentId, request);
@@ -44,6 +49,7 @@ namespace Task1_T.Controllers
 
 
         [HttpDelete(ApiRoutes.Department.Delete)]
+        [ClaimRequirementFilter(PermissionNames.Department.Delete)]
         public async Task<IActionResult> Delete(int departmentId)
         {
             await _departmentService.DeleteDepartmentAsync(departmentId);

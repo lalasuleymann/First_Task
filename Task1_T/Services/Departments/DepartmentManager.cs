@@ -49,7 +49,7 @@ namespace Task1_T.Services.Departments
             {
                 throw new Exception("Data could not be added!");
             }
-            _unitOfWork.Complete();
+             _unitOfWork.Complete();
 
             var dto = _mapper.Map<DepartmentDto>(addedEntity);
             response.DepartmentDto = dto;

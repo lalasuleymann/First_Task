@@ -20,16 +20,42 @@ namespace Task1_T.Services.Manages
             _mapper = mapper;
         }
 
-        public async Task<ICollection<EmployeeDto>> GetEmployeeAsync(int employeeId)
+        public async Task<ICollection<EmployeeDto>> GetDependentEmployeesAsync(int employeeId)
         {
-            var employees = await _dbContext.Employees.Where(x => x.Id == employeeId).Include(x=>x.Children).ToListAsync();
+            //var emp = _dbContext.Employees.Where(x => x.EmployeeParentId == employeeId);
+            //emp.Include(x => x.Children).Where(xx=> xx.EmployeeParentId== employeeId);
+            var employees = await _dbContext.Employees
+                .Where(x => x.Id == employeeId)
+                .Include(x => x.Children)
+                .Select(s => new
+                {
+                    s.Name,
+                    s.Surname,
+                    s.BirthDate,
+                    s.Position,
+                    Children= s.Children.Select(s=>new
+                    {
+                        s.Name,
+                        s.Surname,
+                        s.BirthDate
+                    })
+                }).ToListAsync();
             var result = _mapper.Map<ICollection<EmployeeDto>>(employees);
             return result;
         }
 
-        public async Task<ICollection<EmployeeDto>> GetEmployeesAsync(int employeeId)
+        public async Task<ICollection<EmployeeDto>> GetManagerEmployeesAsync(int employeeId)
         {
-            var employees = await _dbContext.Employees.Where(x => x.Id == employeeId).Include(x => x.Children).ToListAsync();
+            var employees = await _dbContext.Employees
+                .Where(x => x.EmployeeParentId == employeeId)
+                .Include(x => x.EmployeeParent)
+                .Select(s=>new
+                {
+                    s.Name,
+                    s.Surname,
+                    s.BirthDate,
+                    Parents= s.EmployeeParent
+                }).ToListAsync();
             var result = _mapper.Map<ICollection<EmployeeDto>>(employees);
             return result;
         }

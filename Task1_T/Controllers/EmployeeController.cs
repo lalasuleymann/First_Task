@@ -14,26 +14,29 @@ namespace Task1_T.Controllers
         {
             _employeeService = employeeService;
         }
-        [ClaimRequirementFilter("EmployeeGetAll")]
         [HttpGet(ApiRoutes.Employee.GetAll)]
+        [ClaimRequirementFilter(PermissionNames.Employee.GetAll)]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _employeeService.GetEmployeesAsync());
         }
 
         [HttpGet(ApiRoutes.Employee.Get)]
+        [ClaimRequirementFilter(PermissionNames.Employee.Get)]
         public async Task<IActionResult> Get(int employeeId)
         {
             return Ok(await _employeeService.GetEmployeeByIdAsync(employeeId));
         }
 
         [HttpPost(ApiRoutes.Employee.Create)]
+        [ClaimRequirementFilter(PermissionNames.Employee.Create)]
         public async Task<IActionResult> Create(SaveEmployeeRequest request)
         {
             return Created(string.Empty, await _employeeService.CreateEmployeeAsync(request));
         }
 
         [HttpPut(ApiRoutes.Employee.Update)]
+        [ClaimRequirementFilter(PermissionNames.Employee.Update)]
         public async Task<IActionResult> Update(int employeeId, SaveEmployeeRequest request)
         {
             await _employeeService.UpdateEmployeeAsync(employeeId, request);
@@ -41,10 +44,15 @@ namespace Task1_T.Controllers
         }
 
         [HttpDelete(ApiRoutes.Employee.Delete)]
+        [ClaimRequirementFilter(PermissionNames.Employee.Delete)]
         public async Task<IActionResult> Delete(int employeeId)
         {
-            await _employeeService.DeleteEmployeeAsync(employeeId);
-            return NoContent();
+            if (PermissionNames.Employee.Delete.Contains("DeleteDirectory"))
+            {
+                await _employeeService.DeleteEmployeeAsync(employeeId);
+                return NoContent();
+            }
+            return BadRequest();
         }
     }
 }

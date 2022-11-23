@@ -18,7 +18,10 @@ namespace Task1_T.Extensions
             var service = context.HttpContext.RequestServices.GetService<IUserService>();
 
             var userId = context.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "sub").Value;
-
+            if (userId== null)
+            {
+                throw new Exception("User does not exist!");
+            }
             var permissions  = await service?.CacheUserPermissions(Convert.ToInt32(userId));
             var permissionNames = permissions.Select(x => x.Name);
 
@@ -29,5 +32,10 @@ namespace Task1_T.Extensions
 
             await next();
         }
+
+        //public void OnAuthorization(AuthorizationFilterContext context)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

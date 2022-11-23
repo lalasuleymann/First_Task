@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Task1_T.Extensions;
 using Task1_T.Models.Dtos.Positions;
 using Task1_T.Routes;
 using Task1_T.Services.Positions;
@@ -14,6 +15,7 @@ namespace Task1_T.Controllers
         }
 
         [HttpGet(ApiRoutes.Position.GetAll)]
+        [ClaimRequirementFilter(PermissionNames.Position.GetAll)]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _positionService.GetPositionsAsync());
@@ -21,6 +23,7 @@ namespace Task1_T.Controllers
 
 
         [HttpGet(ApiRoutes.Position.Get)]
+        [ClaimRequirementFilter(PermissionNames.Position.Get)]
         public async Task<IActionResult> Get(int positionId)
         {
             return Ok(await _positionService.GetPositionByIdAsync(positionId));
@@ -28,6 +31,7 @@ namespace Task1_T.Controllers
 
 
         [HttpPost(ApiRoutes.Position.Create)]
+        [ClaimRequirementFilter(PermissionNames.Position.Create)]
         public async Task<IActionResult> Create(SavePositionRequest request)
         {
             return Created(string.Empty, await _positionService.CreatePositionAsync(request));
@@ -35,6 +39,7 @@ namespace Task1_T.Controllers
 
 
         [HttpPut(ApiRoutes.Position.Update)]
+        [ClaimRequirementFilter(PermissionNames.Position.Update)]
         public async Task<IActionResult> Update(int positionId, SavePositionRequest request)
         {
             await _positionService.UpdatePositionAsync(positionId, request);
@@ -43,6 +48,7 @@ namespace Task1_T.Controllers
 
 
         [HttpDelete(ApiRoutes.Position.Delete)]
+        [ClaimRequirementFilter(PermissionNames.Position.Delete)]
         public async Task<IActionResult> Delete(int positionId)
         {
             await _positionService.DeletePositionAsync(positionId);
