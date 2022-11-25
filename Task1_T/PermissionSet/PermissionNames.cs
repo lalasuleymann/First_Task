@@ -1,4 +1,4 @@
-﻿namespace Task1_T
+﻿namespace Task1_T.PermissionSet
 {
     public struct PermissionNames
     {
@@ -13,6 +13,7 @@
             public const string Delete = Default + "";
             public const string Create = Default + "/department";
         }
+
         public struct Position
         {
             public const string GetAll = Default;
@@ -20,12 +21,6 @@
             public const string Update = Default + "/position/{positionId}";
             public const string Delete = Default + "/position/{positionId}";
             public const string Create = Default + "/position";
-        }
-
-        public struct Identity
-        {
-            public const string Login = Default + "/identity/login";
-            public const string Register = Default + "/identity/register";
         }
 
         public struct Employee

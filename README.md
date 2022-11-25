@@ -33,3 +33,33 @@
    * Services -> Tokens -> ITokenService.cs, TokenManager.cs
    * Models -> Dtos -> Tokens, BaseDto.cs
    * ManagingController
+
+## Day 6(12.11.2022)
+   * UserPermissionController
+   * Middlewares -> JwtMiddleware
+   * New Migration
+   * Models -> Entities -> UserPermission.cs
+
+## Day 7(15.11.2022)
+   * Models -> Dtos -> UserPermission
+   * Routes -> ApiRoutes -> UserPermission, Manage
+   * Services -> Manages -> IManageService.cs
+
+## Day 8(17.11.2022)
+   * Services -> Manages -> ManageManager.cs
+   * Services -> UserPermissions -> IUserPermissionService.cs
+   * ExceptionMiddleware
+   
+## Day 9(20.11.2022)
+   * Validators -> DepartmentValidator, PermissionValidator, UserValidator, EmployeeValidator, PositionValidator
+   * New Migration
+   * Services -> UserPermissions -> IUserPermissionManager.cs
+
+## Day 10(23.11.2022)
+   * UnitOfWork -> IUnitOfWorkService, IUnitOfWorkManager
+   * New Migration
+   * PermissionSet -> PermissionNames
+   * Extensions -> ClaimRequirementFilter
+   
+## Day 11(25.11.2022)
+   * Check

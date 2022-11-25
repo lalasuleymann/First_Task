@@ -59,7 +59,10 @@ namespace Task1_T.Services.Departments
         public async Task UpdateDepartmentAsync(int departmentId, SaveDepartmentRequest request)
         {
             var item = await _unitOfWork.Departments.GetFirstOrDefaultAsync(x => x.Id == departmentId);
-
+            if (item==null)
+            {
+                throw new Exception("Department does not exists!");
+            }
             item.Name = request.Name;
 
             await _unitOfWork.Departments.UpdateAsync(item);
@@ -69,6 +72,10 @@ namespace Task1_T.Services.Departments
         public async Task DeleteDepartmentAsync(int departmentId)
         {
             var entity = await _unitOfWork.Departments.GetFirstOrDefaultAsync(x => x.Id == departmentId);
+            if (entity == null)
+            {
+                throw new Exception("Department does not exists!");
+            }
             await _unitOfWork.Departments.DeleteAsync(entity);
             _unitOfWork.Complete();
         }

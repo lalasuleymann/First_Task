@@ -74,6 +74,20 @@ builder.Services.AddHttpLogging(httpLogging =>
 {
     httpLogging.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
 });
+
+//static int Recursion(int number)
+//{
+//    if (number == 1)
+//    {
+//        return 1;
+//    }
+//    else
+//    {
+//        return (number * (number - 1));
+//    }
+//}
+//Recursion(5);
+
 var app = builder.Build();
 
 app.UseHttpLogging();

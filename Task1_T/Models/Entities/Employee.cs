@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using Task1_T.Models.Shared;
 
 namespace Task1_T.Models.Entities
@@ -16,7 +15,7 @@ namespace Task1_T.Models.Entities
         public ICollection<EmployeeDepartment> EmployeeDepartments { get; set; }
 
         public int? EmployeeParentId { get; set; }
-        public Employee EmployeeParent { get; set; }
+        public Employee? EmployeeParent { get; set; }
 
         [ForeignKey("EmployeeParentId")]
         public ICollection<Employee> Children { get; set; }

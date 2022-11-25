@@ -12,8 +12,8 @@ using Task1_T.Data;
 namespace Task1_T.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221122214836_Initial")]
-    partial class Initial
+    [Migration("20221124072047_Test")]
+    partial class Test
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -70,7 +70,6 @@ namespace Task1_T.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("EmployeeParentId")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -244,8 +243,7 @@ namespace Task1_T.Migrations
                     b.HasOne("Task1_T.Models.Entities.Employee", "EmployeeParent")
                         .WithMany("Children")
                         .HasForeignKey("EmployeeParentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Task1_T.Models.Entities.Position", "Position")
                         .WithMany("Employees")

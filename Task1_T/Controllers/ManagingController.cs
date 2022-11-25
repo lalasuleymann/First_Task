@@ -16,7 +16,7 @@ namespace Task1_T.Controllers
         }
 
         [HttpGet(ApiRoutes.Manage.GetDependentEmployees)]
-        [ClaimRequirementFilter(PermissionNames.Manage.GetDependentEmployees)]
+        //[ClaimRequirementFilter(PermissionNames.Manage.GetDependentEmployees)]
         public async Task<IActionResult> GetDependentEmployees(int employeeId)
         {
             return Ok(await _manageService.GetDependentEmployeesAsync(employeeId));
@@ -24,7 +24,7 @@ namespace Task1_T.Controllers
 
 
         [HttpGet(ApiRoutes.Manage.GetManagerEmployees)]
-        [ClaimRequirementFilter(PermissionNames.Manage.GetManagerEmployees)]
+        //[ClaimRequirementFilter(PermissionNames.Manage.GetManagerEmployees)]
         public async Task<IActionResult> GetManagerEmployees(int employeeId)
         {
             return Ok(await _manageService.GetManagerEmployeesAsync(employeeId));

@@ -68,7 +68,6 @@ namespace Task1_T.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("EmployeeParentId")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -242,8 +241,7 @@ namespace Task1_T.Migrations
                     b.HasOne("Task1_T.Models.Entities.Employee", "EmployeeParent")
                         .WithMany("Children")
                         .HasForeignKey("EmployeeParentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Task1_T.Models.Entities.Position", "Position")
                         .WithMany("Employees")

@@ -25,14 +25,12 @@ namespace Task1_T.Controllers
         }
 
         [HttpPost(ApiRoutes.Identity.Register)]
-        [ClaimRequirementFilter(PermissionNames.Identity.Register)]
         public async Task<IActionResult> Register (UserRegistrationRequest request)
         {
             return Ok(await _userService.RegisterAsync(request.Email, request.Password));
         }
 
         [HttpPost(ApiRoutes.Identity.Login)]
-        [ClaimRequirementFilter(PermissionNames.Identity.Login)]
         public async Task<IActionResult> Login(UserRegistrationRequest request)
         {
             return Ok(await _userService.LoginAsync(request.Email, request.Password));

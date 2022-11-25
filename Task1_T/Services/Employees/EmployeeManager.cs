@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Task1_T.Extensions;
 using Task1_T.Models.Dtos.Employees;
 using Task1_T.Models.Entities;
+using Task1_T.PermissionSet;
 using Task1_T.Repositories;
 using Task1_T.UnitOfWork;
 
@@ -43,7 +44,11 @@ namespace Task1_T.Services.Employees
             {
                 throw new Exception("Position does not exist in database!");
             }
-
+            var department = _unitOfWork.Departments.GetQuery().Where(x => x.Id == request.DepartmentId);
+            if (department==null)
+            {
+                throw new Exception("Position does not exist in database!");
+            }
             EmployeeGetResponse response = new();
 
             Employee employee = new Employee
@@ -53,7 +58,7 @@ namespace Task1_T.Services.Employees
                 Surname = request.Surname,
                 BirthDate = request.BirthDate,
                 PositionId = request.PositionId,
-                //EmployeeDepartments= request.DepartmentId.ToArray(out employee)
+                EmployeeParentId = request.EmployeeParentId
             };
             
             var addedEntity = await _unitOfWork.Employees.AddAsync(employee);

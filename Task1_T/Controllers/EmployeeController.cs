@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Task1_T.Extensions;
 using Task1_T.Models.Dtos.Employees;
+using Task1_T.PermissionSet;
 using Task1_T.Routes;
 using Task1_T.Services.Employees;
 
@@ -15,7 +16,7 @@ namespace Task1_T.Controllers
             _employeeService = employeeService;
         }
         [HttpGet(ApiRoutes.Employee.GetAll)]
-        [ClaimRequirementFilter(PermissionNames.Employee.GetAll)]
+        //[ClaimRequirementFilter(PermissionNames.Employee.GetAll)]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _employeeService.GetEmployeesAsync());
@@ -29,7 +30,7 @@ namespace Task1_T.Controllers
         }
 
         [HttpPost(ApiRoutes.Employee.Create)]
-        [ClaimRequirementFilter(PermissionNames.Employee.Create)]
+        //[ClaimRequirementFilter(PermissionNames.Employee.Create)]
         public async Task<IActionResult> Create(SaveEmployeeRequest request)
         {
             return Created(string.Empty, await _employeeService.CreateEmployeeAsync(request));
