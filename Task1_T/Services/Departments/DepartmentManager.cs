@@ -7,11 +7,11 @@ using Task1_T.UnitOfWork;
 
 namespace Task1_T.Services.Departments
 {
-    public class DepartmentManager : IDepartmentService
+    public class DeparmentManager : IDepartmentService
     {
         private readonly IUnitOfWorkService _unitOfWork;
         private readonly IMapper _mapper;
-        public DepartmentManager(IUnitOfWorkService unitOfWork,IMapper mapper)
+        public DeparmentManager(IUnitOfWorkService unitOfWork,IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -31,7 +31,6 @@ namespace Task1_T.Services.Departments
             var entities = await _unitOfWork.Departments.GetAllAsync();
             response.DepartmentDtos = _mapper.Map<List<DepartmentDto>>(entities);
             return response;
-
         }
 
         public async Task<DepartmentGetResponse> CreateDepartmentAsync(SaveDepartmentRequest request)
@@ -40,7 +39,6 @@ namespace Task1_T.Services.Departments
 
             Department department = new Department
             {
-                Id = request.Id,
                 Name = request.Name
             };
 

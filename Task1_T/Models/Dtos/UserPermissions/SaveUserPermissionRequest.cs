@@ -4,7 +4,6 @@ namespace Task1_T.Models.Dtos.UserPermissions
 {
     public class SaveUserPermissionRequest
     {
-        public int UserId { get; set; }
-        public int PermissionId { get; set; }
+        public List<int> PermissionIds { get; set; }
     }
 }

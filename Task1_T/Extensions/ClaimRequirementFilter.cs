@@ -1,41 +1,57 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Abp.Domain.Repositories;
+using Abp.Runtime.Security;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Task1_T.Models.Entities;
+using Task1_T.Repositories;
 using Task1_T.Services.Users;
+using Task1_T.UnitOfWork;
 
 namespace Task1_T.Extensions
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class ClaimRequirementFilter : Attribute, IAsyncActionFilter
+    public class ClaimRequirementFilter : IAsyncAuthorizationFilter
     {
-        private readonly string _permission;
+        private readonly string _permissions;
+        private readonly IUnitOfWorkService _unitOfWork;
 
-        public ClaimRequirementFilter(string permission)
+        public ClaimRequirementFilter(string permissions, IUnitOfWorkService unitOfWork)
         {
-            _permission = permission;
+            _permissions = permissions;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            var service = context.HttpContext.RequestServices.GetService<IUserService>();
+            var email= context.HttpContext?.User.FindFirstValue(ClaimTypes.Email);
 
-            var userId = context.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "sub").Value;
-            if (userId== null)
+            var permissions = _permissions.ToLower().Split(",").ToList();
+            bool isAuthorized = await CheckUserPermissions(permissions, email);
+
+            if (!isAuthorized)
             {
-                throw new Exception("User does not exist!");
+                context.Result = new UnauthorizedResult();
             }
-            var permissions  = await service?.CacheUserPermissions(Convert.ToInt32(userId));
-            var permissionNames = permissions.Select(x => x.Name);
-
-            if (!permissionNames.Contains(_permission))
-            {
-                throw new Exception("Your user doesn't include required permission to perform this operation.");
-            }
-
-            await next();
         }
 
-        //public void OnAuthorization(AuthorizationFilterContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        private async Task<bool> CheckUserPermissions(List<string> permissions, string email)
+        {
+            var permissionList = (await _unitOfWork.PermissionRepository.GetPermissionsByUserEmail(email));
+          
+           var hasPermission= permissionList.Any(permission => permissions.Any(p => permission.Name.ToLower() == p));
+            return hasPermission;
+        }
+
+
+        public class AuthorizeAttribute : TypeFilterAttribute
+        {
+            public AuthorizeAttribute(string permission): base(typeof(ClaimRequirementFilter))
+            {
+                Arguments = new object[] { permission };
+            }
+        }
     }
 }

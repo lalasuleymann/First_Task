@@ -1,6 +1,6 @@
 ﻿namespace Task1_T.Models.Shared
 {
-    public interface ITrackEntity : ISoftDeletedEntity, ICreatedDateEntity,
+    public interface ITrackEntity : ICreatedDateEntity, ISoftDeletedEntity,
         IModifiedDateEntity, ISoftDeletedDateEntity
     {
     }

@@ -14,8 +14,8 @@ namespace Task1_T.Data
         public DbSet<Department> Departments { get; set; }
         public DbSet<Position> Positions { get; set; }
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<EmployeeDepartment> EmployeeDepartments { get; set; }
         public DbSet<UserPermission> UserPermissions { get; set; }
+        public DbSet<EmployeeDepartment> EmployeeDepartments { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
@@ -42,19 +42,18 @@ namespace Task1_T.Data
             .HasOne(p => p.Position) 
             .WithMany(e => e.Employees);
 
-            modelBuilder.Entity<Employee>().HasMany(e => e.Children)
-                .WithOne(c => c.EmployeeParent)
-                .HasForeignKey(p=>p.EmployeeParentId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<EmployeeDepartment>().HasKey(ed => ed.Id);
+
+            modelBuilder.Entity<EmployeeDepartment>().HasOne(e => e.Employee)
+            .WithMany(ed => ed.EmployeeDepartments).HasForeignKey(e => e.EmployeeId);
 
             modelBuilder.Entity<EmployeeDepartment>().HasOne(d => d.Department)
             .WithMany(ed => ed.EmployeeDepartments).HasForeignKey(d => d.DepartmentId);
 
-            modelBuilder.Entity<EmployeeDepartment>().HasOne(e=> e.Employee)
-            .WithMany(ed => ed.EmployeeDepartments).HasForeignKey(e => e.EmployeeId);
-
+            modelBuilder.Entity<Employee>().HasMany(e => e.Children)
+                .WithOne(c => c.EmployeeParent)
+                .HasForeignKey(p=>p.EmployeeParentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<UserPermission>().HasKey(up => up.Id);
 
@@ -62,7 +61,8 @@ namespace Task1_T.Data
             .WithMany(up => up.UserPermissions).HasForeignKey(u => u.UserId);
 
             modelBuilder.Entity<UserPermission>().HasOne(p => p.Permission)
-            .WithMany(up => up.UserPermissions).HasForeignKey(p=>p.PermissionId);
+            .WithMany(up => up.UserPermissions).HasForeignKey(p => p.PermissionId);
+
         }
     }
 }

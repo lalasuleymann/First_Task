@@ -4,7 +4,7 @@ namespace Task1_T.Services.Manages
 {
     public interface IManagerService
     {
-        Task<ICollection<EmployeeDto>> GetDependentEmployeesAsync(int employeeId);
-        Task<ICollection<EmployeeDto>> GetManagerEmployeesAsync(int employeeId);
+        Task<EmployeeGetResponse> GetManagerEmployeeAsync(int employeeId);
+        Task<EmployeeGetAllResponse> GetDependentEmployeesAsync(int employeeId);
     }
 }

@@ -5,7 +5,7 @@ namespace Task1_T.Models.Dtos.Employees
     public class EmployeeGetAllResponse
     {
         [JsonPropertyName("employee")]
-        public ICollection<EmployeeDto> EmployeeDtos { get; set; }
+        public IList<EmployeeDto> EmployeeDtos { get; set; }
 
         public EmployeeGetAllResponse()
         {

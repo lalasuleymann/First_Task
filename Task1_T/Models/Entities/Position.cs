@@ -7,6 +7,5 @@ namespace Task1_T.Models.Entities
     {   
         public string Name { get; set; }
         public List<Employee> Employees { get; set; }
-
     }
 }

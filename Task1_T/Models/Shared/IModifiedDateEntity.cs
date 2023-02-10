@@ -2,7 +2,7 @@
 {
     public interface IModifiedDateEntity
     {
-        public DateTime? ModifiedDate { get; set; }
+        public DateTime ModifiedDate { get; set; }
 
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Task1_T.Models.Entities
 {
-    public class UserPermission : BaseEntity
+    public class UserPermission : CommonEntity
     {
         public int UserId { get; set; }
         public int PermissionId { get; set; }

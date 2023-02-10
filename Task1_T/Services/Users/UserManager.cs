@@ -5,8 +5,10 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Security.Cryptography;
 using System.Text;
 using Task1_T.Data;
+using Task1_T.Models.Departments;
 using Task1_T.Models.Dtos.Users;
 using Task1_T.Models.Entities;
+using Task1_T.Models.Permissions;
 using Task1_T.Repositories;
 using Task1_T.Services.Tokens;
 using Task1_T.UnitOfWork;
@@ -22,7 +24,7 @@ namespace Task1_T.Services.Users
         private readonly IMapper _mapper;
 
 
-        public UserManager(IUnitOfWorkService unitOfWork,IMapper mapper, ITokenService tokenService, IMemoryCache memoryCache,AppDbContext dbContext)
+        public UserManager(IUnitOfWorkService unitOfWork, IMapper mapper, ITokenService tokenService, IMemoryCache memoryCache, AppDbContext dbContext)
         {
             _unitOfWork = unitOfWork;
             _tokenService = tokenService;
@@ -40,7 +42,7 @@ namespace Task1_T.Services.Users
             return Convert.ToBase64String(hashedDataBytes);
         }
 
-        public async Task<AuthResponse> RegisterAsync(string email, string password)
+        public async Task<AuthResponse> RegisterAsync(string name, string surname, string email, string password, string repassword)
         {
             AuthResponse response = new();
 
@@ -48,24 +50,33 @@ namespace Task1_T.Services.Users
 
             if (existingUser != null)
             {
-                throw new Exception("User with this mail has already had registered. Try another mail!");
+                    throw new Exception("User with this mail has already had registered. Try another mail!");
             }
 
             var newUser = new User
             {
+                Name = name,
+                Surname = surname,
                 Email = email.ToLower(),
-                Password = CreatePasswordHash(password)
+                Password = CreatePasswordHash(password),
+                RePassword = CreatePasswordHash(repassword)
             };
 
+            if (password != repassword)
+            {
+                throw new Exception("Enter same Password in both Field");
+            }
             var createdUser = await _unitOfWork.Users.AddAsync(newUser);
             if (createdUser == null)
             {
                 throw new Exception("Problem occured during creating account!");
             }
 
+            _unitOfWork.Complete();
             var generatedToken = await _tokenService.GenerateAuthenticationResultForUser(newUser);
             response.Token = generatedToken.Token;
             return response;
+
         }
 
         public async Task<AuthResponse> LoginAsync(string email, string password)
@@ -73,9 +84,9 @@ namespace Task1_T.Services.Users
             AuthResponse authResponse = new();
 
             var user = await _unitOfWork.Users.GetFirstOrDefaultAsync(x => x.Email == email.ToLower());
-            if (user== null)
+            if (user == null)
             {
-                throw new Exception("User is not exist!");
+                throw new Exception("User does not exist!");
             }
             var userHasValidPassword = user.Password == CreatePasswordHash(password);
 
@@ -103,5 +114,19 @@ namespace Task1_T.Services.Users
             _memoryCache.Set(userId, permissions, TimeSpan.FromMinutes(10));
             return permissions;
         }
+
+        public async Task<GetAllUserResponses> GetSignedUsers()
+        {
+            var response = new GetAllUserResponses();
+            var entities = await _unitOfWork.Users.GetAllAsync();
+            response.UserDtos = _mapper.Map<List<UserDto>>(entities);
+            return response;
+        }
+
+        //public async Task<string> GetUserEmail()
+        //{
+        //    var email = _unitOfWork.Users.GetFirstOrDefaultAsync(x=>x.Email);
+        //    return email;
+        //}
     }
 }

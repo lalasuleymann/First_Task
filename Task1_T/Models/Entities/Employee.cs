@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 using Task1_T.Models.Shared;
+using static Task1_T.Routes.ApiRoutes;
 
 namespace Task1_T.Models.Entities
 {
@@ -17,7 +19,6 @@ namespace Task1_T.Models.Entities
         public int? EmployeeParentId { get; set; }
         public Employee? EmployeeParent { get; set; }
 
-        [ForeignKey("EmployeeParentId")]
         public ICollection<Employee> Children { get; set; }
     }
 }

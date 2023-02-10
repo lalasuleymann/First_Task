@@ -9,9 +9,12 @@ namespace Task1_T.Models.Dtos.Employees
         public string Name { get; set; }
         public string Surname { get; set; }
         public DateTime BirthDate { get; set; }
-        public Employee Employee { get; set; }
-        public ICollection<Employee> Children { get; set; }
-        public int? EmployeeParentId { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        //public ICollection<EmployeeDepartment> EmployeeDepartments { get; set; }
+        public string EmployeeParentName { get; set; }
+        public string PositionName { get; set; }
         public int PositionId { get; set; }
+        public int? EmployeeParentId { get; set; }
     }
 }

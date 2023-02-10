@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using Task1_T.Data;
 using Task1_T.Models.Dtos.Employees;
+using Task1_T.Models.Dtos.UserPermissions;
 using Task1_T.UnitOfWork;
 
 namespace Task1_T.Services.Manages
@@ -20,42 +21,20 @@ namespace Task1_T.Services.Manages
             _mapper = mapper;
         }
 
-        public async Task<ICollection<EmployeeDto>> GetDependentEmployeesAsync(int employeeId)
-        {
-            var employees = await _dbContext.Employees
-                .Where(x => x.Id == employeeId)
-                .Include(x => x.Children)
-                .Select(s => new
-                {
-                    s.Name,
-                    s.Surname,
-                    s.BirthDate,
-                    s.Position,
-                    Children= s.Children.Select(s=>new
-                    {
-                        s.Name,
-                        s.Surname,
-                        s.BirthDate
-                    })
-                }).ToListAsync();
-            var result = _mapper.Map<ICollection<EmployeeDto>>(employees);
-            return result;
+        public async Task<EmployeeGetResponse> GetManagerEmployeeAsync(int employeeId)
+        {   
+            var response = new EmployeeGetResponse();
+            var employee = await _unitOfWork.EmployeeRepository.GetEmployeeForParentId(employeeId);
+            response.EmployeeDto = _mapper.Map<EmployeeDto>(employee);
+            return response;
         }
-
-        public async Task<ICollection<EmployeeDto>> GetManagerEmployeesAsync(int employeeId)
+        public async Task<EmployeeGetAllResponse> GetDependentEmployeesAsync(int employeeId)
         {
-            var employees = await _dbContext.Employees
-                .Where(x => x.EmployeeParentId == employeeId)
-                .Include(x => x.EmployeeParent)
-                .Select(s=>new
-                {
-                    s.Name,
-                    s.Surname,
-                    s.BirthDate,
-                    Parents= s.EmployeeParent
-                }).ToListAsync();
-            var result = _mapper.Map<ICollection<EmployeeDto>>(employees);
-            return result;
+            var response = new EmployeeGetAllResponse();
+            //var employees = await _dbContext.Employees.FromSqlRaw($"[SelectEmployeeChildren] {employeeId}").ToListAsync();
+            var employees = await _unitOfWork.EmployeeRepository.GetDependentEmployees(employeeId);
+            response.EmployeeDtos = _mapper.Map<List<EmployeeDto>>(employees);
+            return response;
         }
     }
 }
